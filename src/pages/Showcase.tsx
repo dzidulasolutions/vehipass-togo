@@ -22,6 +22,9 @@ import {
 import { useAsync } from '../hooks/useAsync'
 import { api } from '../services/api'
 import { getNetwork, setNetwork, subscribeNetwork } from '../services/network'
+import { env } from '../config/env'
+import { getDemoSummary, resetDemo } from '../services/demo'
+
 
 const ICONS = [
   IconlyHome, IconlySearch, IconlyUser, IconlyAddUser, IconlyDocument, IconlyWallet,
@@ -76,8 +79,53 @@ function ApiSection() {
   )
 }
 
+const loadSummary = () => getDemoSummary()
+
+function DemoDataSection() {
+  const { state, retry } = useAsync(loadSummary)
+
+  const handleReset = () => {
+    resetDemo()
+    retry()
+  }
+
+  return (
+    <section className="flex flex-col gap-sm">
+      <h2 className="text-h2">Données de démo</h2>
+      {state.status === 'loading' && (
+        <SkeletonRegion>
+          <SkeletonCard lines={3} />
+        </SkeletonRegion>
+      )}
+      {state.status === 'error' && <ErrorState error={state.error} onRetry={retry} />}
+      {state.status === 'success' && (
+        <dl className="grid grid-cols-[auto_1fr] gap-x-md gap-y-3xs rounded-surface border border-border bg-surface p-md text-small">
+          <dt className="text-muted">Générées le</dt>
+          <dd className="tabular-nums">{state.data.generatedAt}</dd>
+          <dt className="text-muted">Véhicules</dt>
+          <dd className="tabular-nums">{state.data.vehicles}</dd>
+          <dt className="text-muted">Propriétaires</dt>
+          <dd className="tabular-nums">{state.data.owners}</dd>
+          <dt className="text-muted">Documents</dt>
+          <dd className="tabular-nums">{state.data.documents}</dd>
+          <dt className="text-muted">PV</dt>
+          <dd className="tabular-nums">{state.data.penalties}</dd>
+        </dl>
+      )}
+      <button
+        type="button"
+        onClick={handleReset}
+        className="min-h-11 self-start rounded-control border border-border px-sm text-small font-semibold hover:bg-surface"
+      >
+        Réinitialiser la démo
+      </button>
+    </section>
+  )
+}
+
 export default function Showcase() {
   return (
+
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-lg p-md">
       <header className="flex flex-col gap-3xs">
         <p className="font-righteous text-display">VéhiPass</p>
@@ -112,8 +160,8 @@ export default function Showcase() {
           ))}
         </div>
       </section>
-
       <ApiSection />
+      {env.VITE_API_MODE === 'mock' && <DemoDataSection />}
 
       <section className="flex flex-col gap-sm">
         <h2 className="text-h2">Chargement</h2>
