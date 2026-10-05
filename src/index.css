@@ -2,22 +2,22 @@
 
 /* ---------- Polices (fichiers dans src/assets/fonts) ---------- */
 @font-face {
-  font-family: "Google Sans";
-  src: url("./assets/fonts/GoogleSans-Regular.woff2") format("woff2");
-  font-weight: 400;
+  font-family: "TheBoldFont";
+  src: url("./assets/fonts/THEBOLDFONT.ttf") format("truetype");
+  font-weight: 100 900;
   font-style: normal;
-  font-display: swap; /* affiche le texte tout de suite avec une police de secours */
+  font-display: swap;
 }
 @font-face {
   font-family: "Google Sans";
-  src: url("./assets/fonts/GoogleSans-SemiBold.woff2") format("woff2");
-  font-weight: 600;
+  src: url("./assets/fonts/GoogleSans.ttf") format("truetype");
+  font-weight: 400 700;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Righteous";
-  src: url("./assets/fonts/Righteous-Regular.woff2") format("woff2");
+  src: url("./assets/fonts/Righteous-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -26,6 +26,7 @@
 /* ---------- Tokens de design ---------- */
 @theme {
   --font-ui: "Google Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-title: "TheBoldFont", ui-sans-serif, system-ui, sans-serif;
   --font-righteous: "Righteous", ui-sans-serif, system-ui, sans-serif;
 
   /* Noir / blanc / gris ; couleurs fonctionnelles en dernier recours (verdicts, erreurs) */
@@ -92,6 +93,12 @@
   }
 }
 
+h1,
+h2,
+h3 {
+  @apply font-title;
+}
+
 /* ---------- Fonds décoratifs (repris de ton ancien projet) ---------- */
 .grid-wrapper {
   min-height: 100%;
@@ -109,8 +116,16 @@
     linear-gradient(to right, rgba(73, 73, 73, 0.185) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(73, 73, 73, 0.185) 1px, transparent 1px);
   background-size: 20px 30px;
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%);
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%);
+  -webkit-mask-image: radial-gradient(
+    ellipse 70% 60% at 50% 0%,
+    #000 60%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 70% 60% at 50% 0%,
+    #000 60%,
+    transparent 100%
+  );
 }
 
 .image-bg {
