@@ -7,6 +7,8 @@ services:
     envVars:
       - key: NODE_VERSION
         value: "22"
+      - key: VITE_API_MODE
+        value: mock
     routes:
       # Sans cette règle, ouvrir directement /une-page donnerait une 404 de Render
       # car seul index.html existe : React Router doit prendre le relais.
