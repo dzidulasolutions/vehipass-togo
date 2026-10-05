@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: vehipass-togo
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+    routes:
+      # Sans cette règle, ouvrir directement /une-page donnerait une 404 de Render
+      # car seul index.html existe : React Router doit prendre le relais.
+      - type: rewrite
+        source: /*
+        destination: /index.html
