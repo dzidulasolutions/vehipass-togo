@@ -1,1 +1,144 @@
 @import "tailwindcss";
+
+/* ---------- Polices (fichiers dans src/assets/fonts) ---------- */
+@font-face {
+  font-family: "Google Sans";
+  src: url("./assets/fonts/GoogleSans-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap; /* affiche le texte tout de suite avec une police de secours */
+}
+@font-face {
+  font-family: "Google Sans";
+  src: url("./assets/fonts/GoogleSans-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Righteous";
+  src: url("./assets/fonts/Righteous-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- Tokens de design ---------- */
+@theme {
+  --font-ui: "Google Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-righteous: "Righteous", ui-sans-serif, system-ui, sans-serif;
+
+  /* Noir / blanc / gris ; couleurs fonctionnelles en dernier recours (verdicts, erreurs) */
+  --color-primary: #000000;
+  --color-background: #ffffff;
+  --color-foreground: #171717;
+  --color-surface: #fafafa;
+  --color-muted: #737373;
+  --color-border: #e5e5e5;
+
+  --color-success: #15803d;
+  --color-success-bg: #f0fdf4;
+  --color-error: #b91c1c;
+  --color-error-bg: #fef2f2;
+  --color-warning: #a16207;
+  --color-warning-bg: #fefce8;
+
+  /* Espacement : échelle de 4px */
+  --spacing-3xs: 0.25rem;
+  --spacing-2xs: 0.5rem;
+  --spacing-xs: 0.75rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-2xl: 4rem;
+
+  /* Radius : deux valeurs seulement */
+  --radius-control: 0.25rem;
+  --radius-surface: 0.5rem;
+
+  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  /* Typographie : échelle fixe */
+  --text-display: 2.25rem;
+  --text-display--line-height: 1.15;
+  --text-display--font-weight: 600;
+  --text-h1: 1.5rem;
+  --text-h1--line-height: 1.25;
+  --text-h1--font-weight: 600;
+  --text-h2: 1.125rem;
+  --text-h2--line-height: 1.3;
+  --text-h2--font-weight: 600;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.5;
+  --text-small: 0.8125rem;
+  --text-small--line-height: 1.4;
+  --text-caption: 0.6875rem;
+  --text-caption--line-height: 1.3;
+  --text-numeric: 1rem;
+  --text-numeric--line-height: 1.4;
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  body {
+    @apply bg-background text-foreground font-ui text-body;
+  }
+
+  /* Focus clavier toujours visible (accessibilité) */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+/* ---------- Fonds décoratifs (repris de ton ancien projet) ---------- */
+.grid-wrapper {
+  min-height: 100%;
+  width: 100%;
+  position: relative;
+  background-color: #171717;
+  isolation: isolate;
+}
+
+.grid-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(to right, rgba(73, 73, 73, 0.185) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(73, 73, 73, 0.185) 1px, transparent 1px);
+  background-size: 20px 30px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%);
+}
+
+.image-bg {
+  position: relative;
+  background-image: url("/bg-image.jpg"); /* fichier dans public/ */
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.image-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+}
+.image-bg > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Scrollbars invisibles, défilement conservé */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
