@@ -26,12 +26,12 @@ const isoDateTime = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/, 'date-heure ISO attendue')
 
-const vehicleStatus = z.enum(['ACTIF', 'A_VERIFIER', 'SUSPENDU', 'INACTIF', 'SIGNALE'])
-const documentType = z.enum(['registration', 'insurance', 'technical_inspection'])
-const documentStatus = z.enum(['VALIDE', 'EXPIRE', 'SUSPENDU', 'EN_ATTENTE', 'REVOQUE', 'NON_TROUVE'])
+export const vehicleStatus = z.enum(['ACTIF', 'A_VERIFIER', 'SUSPENDU', 'INACTIF', 'SIGNALE'])
+export const documentType = z.enum(['registration', 'insurance', 'technical_inspection'])
+export const documentStatus = z.enum(['VALIDE', 'EXPIRE', 'SUSPENDU', 'EN_ATTENTE', 'REVOQUE', 'NON_TROUVE'])
 const qrStatus = z.enum(['ACTIF', 'REVOQUE', 'REMPLACE'])
 const penaltyStatus = z.enum(['BROUILLON', 'VALIDE', 'NOTIFIE', 'CONTESTE', 'PAYE', 'ANNULE'])
-const verdictCode = z.enum([
+export const verdictCode = z.enum([
   'VERIFICATION_IMPOSSIBLE',
   'CODE_REVOQUE',
   'VEHICULE_SUSPENDU',
