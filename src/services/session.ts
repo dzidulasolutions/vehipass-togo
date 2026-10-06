@@ -1,23 +1,41 @@
-const KEY = 'vehipass.session.token'
-let memoryToken: string | null = null
+import type { Session } from '../types/api'
+import { sessionSchema } from './apiSchemas'
 
-/** Jeton de session du prototype. Dans un vrai système : cookie httpOnly, pas de stockage navigateur. */
-export function getToken(): string | null {
+const KEY = 'vehipass.session'
+let memorySession: Session | null = null
+
+/** Session courante, ou null. Les données stockées sont revalidées à chaque lecture. */
+export function getSession(): Session | null {
   try {
-    if (typeof sessionStorage === 'undefined') return memoryToken
-    return sessionStorage.getItem(KEY)
+    if (typeof sessionStorage === 'undefined') return memorySession
+    const raw = sessionStorage.getItem(KEY)
+    if (!raw) return null
+    const parsed = sessionSchema.safeParse(JSON.parse(raw))
+    return parsed.success ? parsed.data : null
   } catch {
-    return memoryToken
+    return memorySession
   }
 }
 
-export function setToken(token: string | null): void {
-  memoryToken = token
+export function setSession(session: Session): void {
+  memorySession = session
   try {
-    if (typeof sessionStorage === 'undefined') return
-    if (token) sessionStorage.setItem(KEY, token)
-    else sessionStorage.removeItem(KEY)
+    if (typeof sessionStorage !== 'undefined') sessionStorage.setItem(KEY, JSON.stringify(session))
   } catch {
-    // stockage indisponible : le jeton reste en mémoire
+    // stockage indisponible : la session reste en mémoire
   }
+}
+
+export function clearSession(): void {
+  memorySession = null
+  try {
+    if (typeof sessionStorage !== 'undefined') sessionStorage.removeItem(KEY)
+  } catch {
+    // rien à faire
+  }
+}
+
+/** Jeton envoyé au serveur en mode http. */
+export function getToken(): string | null {
+  return getSession()?.token ?? null
 }
