@@ -150,3 +150,29 @@ export const IconlyLogout = ({ size = 24, color = 'currentColor', className }: I
     <path d="M13.2554 16.625L13.2554 21.25L2.73144 21.25L2.73144 2.75L13.2554 2.75L13.2554 7.375" stroke={color} strokeWidth="1.5" strokeLinecap="square" />
   </svg>
 )
+
+/** Triangle d'alerte. Dessin provisoire : à remplacer par l'icône Iconly « Danger Triangle ». */
+export const IconAlert = ({ size = 24, color = 'currentColor', className }: IconProps) => (
+  <svg {...svgProps(size, className)} viewBox="0 0 24 24">
+    <path d="M12 3.5L21.5 20H2.5L12 3.5Z" stroke={color} strokeWidth="1.5" strokeLinejoin="round" />
+    <path d="M12 10V14.5" stroke={color} strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M12 17.25V17.3" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+  </svg>
+)
+
+/** Scanner de QR. Dessin provisoire : à remplacer par l'icône Iconly « Scan ». */
+export const IconScan = ({ size = 24, color = 'currentColor', className }: IconProps) => (
+  <svg {...svgProps(size, className)} viewBox="0 0 24 24">
+    <path d="M4 8V4H8M16 4H20V8M20 16V20H16M8 20H4V16" stroke={color} strokeWidth="1.5" strokeLinecap="square" />
+    <path d="M4 12H20" stroke={color} strokeWidth="1.5" strokeLinecap="square" />
+  </svg>
+)
+
+/** Information. Dessin provisoire : à remplacer par l'icône Iconly « Info Circle ». */
+export const IconInfo = ({ size = 24, color = 'currentColor', className }: IconProps) => (
+  <svg {...svgProps(size, className)} viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="8.75" stroke={color} strokeWidth="1.5" />
+    <path d="M12 11V16" stroke={color} strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M12 8V8.05" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+  </svg>
+)
