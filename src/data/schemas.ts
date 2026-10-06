@@ -135,6 +135,7 @@ export const penaltySchema = z.object({
   amount_xof: z.number().int().positive(),
   agent_id: id,
   status: penaltyStatus,
+  notified_at: isoDateTime.nullable(),
   created_at: isoDateTime,
   origin: z.enum(['online', 'offline']),
   contest: z
@@ -197,6 +198,7 @@ export const auditEntrySchema = z.object({
 export const configSchema = z.object({
   activation_months: z.number().int().positive(),
   grace_days: z.number().int().min(0),
+  contest_days: z.number().int().positive(),
   registration_fee_xof: z.number().int().min(0),
   snapshot_hours: z.number().int().positive(),
 }) satisfies z.ZodType<Config>

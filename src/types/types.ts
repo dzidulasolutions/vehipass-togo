@@ -122,6 +122,7 @@ export interface Penalty {
   agent_id: string
   status: PenaltyStatus
   created_at: string // ISO
+  notified_at: string | null // ISO ; null tant que le SMS n'est pas parti
   origin: 'online' | 'offline'
   contest: { reason: string; created_at: string; decision: 'ANNULE' | 'MAINTENU' | null } | null
   payment_id: string | null
@@ -177,6 +178,7 @@ export interface AuditEntry {
 export interface Config {
   activation_months: number
   grace_days: number
+  contest_days: number
   registration_fee_xof: number
   snapshot_hours: number
 }

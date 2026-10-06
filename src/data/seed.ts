@@ -167,6 +167,7 @@ export function buildSeed(today: Date): Db {
     agent_id: 'u_agent1',
     status,
     created_at: dt(days),
+    notified_at: ['NOTIFIE', 'CONTESTE', 'PAYE'].includes(status) ? dt(days, '10:20:00') : null,
     origin: 'online',
     contest: null,
     payment_id: null,
@@ -175,7 +176,7 @@ export function buildSeed(today: Date): Db {
 
   return {
     meta: { version: 1, generated_at: d(0) },
-    config: { activation_months: 6, grace_days: 15, registration_fee_xof: 1000, snapshot_hours: 24 },
+        config: { activation_months: 6, grace_days: 15, contest_days: 30, registration_fee_xof: 1000, snapshot_hours: 24 },
     organisations: [
       { id: 'org_transport', name: 'Service transport (démo)', type: 'transport_admin' },
       { id: 'org_assur', name: 'Assureur (démo)', type: 'insurer' },
@@ -213,7 +214,7 @@ export function buildSeed(today: Date): Db {
     ],
     penalties: [
       penalty('pv1', 'v8', 'CASQUE', 'NOTIFIE', -60),
-      penalty('pv2', 'v8', 'DOC_ABSENT', 'NOTIFIE', -45),
+      penalty('pv2', 'v8', 'DOC_ABSENT', 'NOTIFIE', -10),
       penalty('pv3', 'v9', 'ASSUR_EXP', 'CONTESTE', -20, {
         contest: {
           reason: "Assurance renouvelée la veille du contrôle (justificatif joint, démo).",
