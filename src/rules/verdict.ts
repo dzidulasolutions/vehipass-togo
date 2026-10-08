@@ -32,7 +32,7 @@ export type VerdictResult = {
   unpaidPenaltyCount: number
 }
 
-const META: Record<VerdictCode, { color: VerdictColor; label: string; action: string }> = {
+export const VERDICT_META: Record<VerdictCode, { color: VerdictColor; label: string; action: string }> = {
   VERIFICATION_IMPOSSIBLE: {
     color: 'gris',
     label: 'Vérification impossible',
@@ -85,7 +85,7 @@ function result(
   code: VerdictCode,
   details: Partial<Omit<VerdictResult, 'code' | 'color' | 'label' | 'suggestedAction'>> = {},
 ): VerdictResult {
-  const meta = META[code]
+  const meta = VERDICT_META[code]
   return {
     code,
     color: meta.color,
@@ -127,4 +127,11 @@ export function computeVerdict(input: VerdictInput): VerdictResult {
     return result('DOCUMENT_A_REGULARISER', details)
   }
   return result('CONFORME', details)
+}
+
+const NO_DATA: ReadonlySet<VerdictCode> = new Set(['VERIFICATION_IMPOSSIBLE', 'CODE_REVOQUE'])
+
+/** Ces verdicts n'exposent aucune donnée du dossier : ni plaque, ni statut, ni documents. */
+export function verdictExposesData(code: VerdictCode): boolean {
+  return !NO_DATA.has(code)
 }

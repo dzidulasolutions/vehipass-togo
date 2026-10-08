@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { documentStatus, documentType, vehicleStatus, verdictCode } from '../data/schemas'
-import type { LoginChallenge, PublicStatus, Session, VerifyResult } from '../types/api'
+import type { ControlListItem, LoginChallenge, PublicStatus, Session, VerifyResult } from '../types/api'
 
 export const sessionSchema = z.object({
   token: z.string().min(1),
@@ -56,3 +56,11 @@ export const verifyResultSchema = z.object({
   controlId: z.string().nullable(),
   checkedAt: z.string().min(1),
 }) satisfies z.ZodType<VerifyResult>
+
+export const controlListItemSchema = z.object({
+  id: z.string().min(1),
+  timestamp: z.string().min(1),
+  verdict: verdictCode,
+  plate: z.string().nullable(),
+  mode: z.enum(['online', 'offline']),
+}) satisfies z.ZodType<ControlListItem>

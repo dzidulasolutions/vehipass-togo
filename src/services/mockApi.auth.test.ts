@@ -248,3 +248,52 @@ describe('vérification d’un QR', () => {
     expect((await verifyChain(getDb().audit_log)).valid).toBe(true)
   })
 })
+
+describe('historique des contrôles', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+    resetDb()
+    clearSession()
+    setNetwork('online')
+  })
+  afterEach(() => {
+    vi.useRealTimers()
+    clearSession()
+  })
+
+  it('refuse sans session', async () => {
+    await expect(call(api.listMyControls())).rejects.toMatchObject({ code: 'UNAUTHORIZED' })
+  })
+
+  it('refuse un propriétaire', async () => {
+    const challenge = await call(api.login({ kind: 'owner', idRef: 'ID-DEMO-0001' }))
+    await call(api.verifyOtp(challenge.challengeId, DEMO_OTP))
+    await expect(call(api.listMyControls())).rejects.toMatchObject({ code: 'FORBIDDEN' })
+  })
+
+  it('retourne uniquement les contrôles de l’agent, du plus récent au plus ancien', async () => {
+    await loginAgent()
+    const list = await call(api.listMyControls())
+    const mine = getDb().controls.filter((c) => c.agent_id === 'u_agent1')
+    expect(list).toHaveLength(mine.length)
+    expect(list.length).toBeGreaterThan(0)
+    const times = list.map((item) => item.timestamp)
+    expect(times).toEqual([...times].sort().reverse())
+  })
+
+  it('masque la plaque quand le verdict n’exposait aucune donnée', async () => {
+    await loginAgent()
+    const list = await call(api.listMyControls())
+    const hidden = list.filter((i) => i.verdict === 'VERIFICATION_IMPOSSIBLE' || i.verdict === 'CODE_REVOQUE')
+    expect(hidden.length).toBeGreaterThan(0)
+    for (const item of hidden) expect(item.plate).toBeNull()
+    expect(list.some((i) => i.plate !== null)).toBe(true)
+  })
+
+  it('place un nouveau contrôle en tête de liste', async () => {
+    await loginAgent()
+    const result = await call(api.verifyQr(tokenOf('v4')))
+    const list = await call(api.listMyControls())
+    expect(list[0]).toMatchObject({ id: result.controlId, verdict: 'VEHICULE_SUSPENDU', plate: 'TG-DEMO-004' })
+  })
+})

@@ -1,5 +1,5 @@
 import type { VerdictResult } from '../rules/verdict'
-import type { Role } from './types'
+import type { Role, VerdictCode } from './types'
 
 export type ApiMode = 'mock' | 'http'
 
@@ -49,6 +49,16 @@ export interface PublicStatus {
   label: string
 }
 
+/** Une ligne de l'historique des contrôles d'un agent. */
+export interface ControlListItem {
+  id: string
+  timestamp: string
+  verdict: VerdictCode
+  /** null quand le verdict n'exposait aucune donnée (QR inconnu, invalide ou révoqué). */
+  plate: string | null
+  mode: 'online' | 'offline'
+}
+
 /**
  * Contrat unique entre l'interface et les données.
  * Chaque fonctionnalité ajoute ses méthodes ici ; le mock ET le client http
@@ -67,4 +77,5 @@ export interface Api {
 
   // Agent
   verifyQr(scannedToken: string): Promise<VerifyResult>
+  listMyControls(): Promise<ControlListItem[]>
 }

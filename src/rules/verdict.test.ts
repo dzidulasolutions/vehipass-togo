@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { VehicleDocument, VerdictCode, VerdictColor } from '../types/types'
-import { computeVerdict, type VerdictInput } from './verdict'
+import { computeVerdict, verdictExposesData, type VerdictInput } from './verdict'
 import type { VehicleStatus } from '../types/types'
 
 const TODAY = '2026-10-05'
@@ -162,9 +162,23 @@ describe('textes des verdicts', () => {
       const r = computeVerdict(input)
       expect(r.code).toBe(code)
       expect(r.color).toBe(color)
+      expect(verdictExposesData(code)).toBe(r.vehicleStatus !== null)
       expect(r.label.length).toBeGreaterThan(0)
       expect(r.suggestedAction.length).toBeGreaterThan(0)
       expect(`${r.label} ${r.suggestedAction}`).not.toMatch(/fraud|infraction|volé|illégal|coupable/i)
     },
   )
+})
+
+describe('verdictExposesData', () => {
+  it('n’expose rien pour un QR inconnu, invalide ou révoqué', () => {
+    expect(verdictExposesData('VERIFICATION_IMPOSSIBLE')).toBe(false)
+    expect(verdictExposesData('CODE_REVOQUE')).toBe(false)
+  })
+
+  it('expose le dossier pour tous les autres verdicts', () => {
+    for (const code of ['VEHICULE_SUSPENDU', 'A_VERIFIER', 'REACTIVATION_REQUISE', 'DOCUMENT_A_REGULARISER', 'CONFORME'] as const) {
+      expect(verdictExposesData(code)).toBe(true)
+    }
+  })
 })

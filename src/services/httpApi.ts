@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { env } from '../config/env'
 import type { Api, AppInfo } from '../types/api'
 import {
+  controlListItemSchema,
   loginChallengeSchema,
   publicStatusSchema,
   sessionSchema,
@@ -46,5 +47,7 @@ export function createHttpApi(
 
     verifyQr: (scannedToken) =>
       client.get(`/agent/verify/${encodeURIComponent(scannedToken)}`, { schema: verifyResultSchema }),
+
+    listMyControls: () => client.get('/agent/controls', { schema: z.array(controlListItemSchema) }),
   }
 }

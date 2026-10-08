@@ -3,10 +3,11 @@ import { can, publicStatusLabel, type Permission } from '../rules/access'
 import { toIsoDate } from '../rules/dates'
 import { countUnpaid } from '../rules/penalties'
 import { parseQrToken } from '../rules/qr'
-import { computeVerdict } from '../rules/verdict'
+import { computeVerdict, verdictExposesData } from '../rules/verdict'
 import type {
   AgentVehicleView,
   Api,
+  ControlListItem,
   LoginChallenge,
   LoginCredentials,
   PublicStatus,
@@ -229,6 +230,22 @@ function getPublicStatus(scannedToken: string): PublicStatus {
   return { label: publicStatusLabel(evaluateScan(getDb(), scannedToken).verdict.code) }
 }
 
+async function listMyControls(): Promise<ControlListItem[]> {
+  const actor = await authorize('control.list_own')
+  const db = getDb()
+  return db.controls
+    .filter((c) => c.agent_id === actor.userId)
+    .sort((a, b) => (a.timestamp < b.timestamp ? 1 : a.timestamp > b.timestamp ? -1 : 0))
+    .map((c) => ({
+      id: c.id,
+      timestamp: c.timestamp,
+      verdict: c.verdict,
+      // La plaque n'apparaît que si le verdict l'avait déjà montrée à l'agent.
+      plate: verdictExposesData(c.verdict) ? (db.vehicles.find((v) => v.id === c.vehicle_id)?.plate ?? null) : null,
+      mode: c.mode,
+    }))
+}
+
 export function createMockApi(): Api {
   return {
     getAppInfo: () =>
@@ -242,5 +259,6 @@ export function createMockApi(): Api {
     logout: () => simulate(() => logout()),
     getPublicStatus: (scannedToken) => simulate(() => getPublicStatus(scannedToken)),
     verifyQr: (scannedToken) => simulate(() => verifyQr(scannedToken)),
+        listMyControls: () => simulate(() => listMyControls()),
   }
 }
