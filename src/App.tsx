@@ -1,8 +1,12 @@
 import { Route, Routes } from 'react-router-dom'
 import PrototypeBanner from './components/PrototypeBanner'
 import { RequireRole } from './components/RequireRole'
+import AgentHistoryPage from './features/agent/AgentHistoryPage'
+import AgentHomePage from './features/agent/AgentHomePage'
 import AgentLayout from './features/agent/AgentLayout'
 import AgentLoginPage from './features/agent/AgentLoginPage'
+import AgentOnboardingPage from './features/agent/AgentOnboardingPage'
+import AgentProfilePage from './features/agent/AgentProfilePage'
 import AgentScanPage from './features/agent/AgentScanPage'
 import HomePage from './pages/HomePage'
 import NotFound from './pages/NotFound'
@@ -15,6 +19,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/fondations" element={<Showcase />} />
+        <Route path="/agent/bienvenue" element={<AgentOnboardingPage />} />
         <Route path="/agent/connexion" element={<AgentLoginPage />} />
         <Route
           path="/agent"
@@ -24,7 +29,10 @@ export default function App() {
             </RequireRole>
           }
         >
-          <Route index element={<AgentScanPage />} />
+          <Route index element={<AgentHomePage />} />
+          <Route path="scan" element={<AgentScanPage />} />
+          <Route path="historique" element={<AgentHistoryPage />} />
+          <Route path="profil" element={<AgentProfilePage />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

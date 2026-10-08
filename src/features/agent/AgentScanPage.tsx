@@ -51,11 +51,11 @@ export default function AgentScanPage() {
   const reset = () => setState({ phase: 'idle' })
 
   return (
-    <div className="w-200 flex flex-col gap-md">
+    <div className="flex flex-col gap-md">
       {state.phase === 'idle' && (
         <>
           <header className="flex flex-col gap-3xs">
-            <h1 className="text-h1 font-title">Scanner un QR</h1>
+            <h1 className="font-title text-h1">Scanner un QR</h1>
             <p className="text-small text-muted">
               Papiers absents ? Scannez le QR du véhicule pour vérifier son dossier.
             </p>
@@ -64,28 +64,35 @@ export default function AgentScanPage() {
           <section className="flex flex-col gap-xs" aria-label="Caméra">
             {cameraOn ? (
               <>
-                <QrScanner
-                  onScan={verify}
-                  onError={(message) => {
-                    setCameraOn(false)
-                    setCameraError(message)
-                  }}
-                />
+                <div className="overflow-hidden rounded-surface bg-primary">
+                  <QrScanner
+                    onScan={verify}
+                    onError={(message) => {
+                      setCameraOn(false)
+                      setCameraError(message)
+                    }}
+                  />
+                </div>
                 <Button variant="secondary" onClick={() => setCameraOn(false)}>
                   Arrêter la caméra
                 </Button>
               </>
             ) : (
-              <Button
-                fullWidth
-                icon={<IconScan size={20} />}
-                onClick={() => {
-                  setCameraError(null)
-                  setCameraOn(true)
-                }}
-              >
-                Activer la caméra
-              </Button>
+              <div className="flex aspect-square flex-col items-center justify-center gap-sm rounded-surface bg-primary p-md text-center text-background">
+                <IconScan size={48} />
+                <p className="max-w-56 text-small text-background/70">
+                  Placez le QR du véhicule dans le cadre pour lancer la vérification.
+                </p>
+                <Button
+                  variant="inverse"
+                  onClick={() => {
+                    setCameraError(null)
+                    setCameraOn(true)
+                  }}
+                >
+                  Activer la caméra
+                </Button>
+              </div>
             )}
             {cameraError && (
               <p role="alert" className="rounded-control bg-error-bg p-xs text-small text-error">

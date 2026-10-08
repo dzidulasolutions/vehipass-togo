@@ -8,6 +8,8 @@ import { useSession } from '../../hooks/useSession'
 import { api } from '../../services/api'
 import { DEMO_HINT } from '../../services/demo'
 import { ApiError, toUserMessage } from '../../services/errors'
+import { AgentFrame } from './AgentFrame'
+import { hasSeenOnboarding } from './onboarding'
 
 export default function AgentLoginPage() {
   const navigate = useNavigate()
@@ -23,6 +25,7 @@ export default function AgentLoginPage() {
   const [error, setError] = useState<string | null>(null)
 
   if (session?.role === 'control_agent') return <Navigate to="/agent" replace />
+  if (!hasSeenOnboarding()) return <Navigate to="/agent/bienvenue" replace />
 
   async function submitCredentials(event: FormEvent) {
     event.preventDefault()
@@ -70,93 +73,98 @@ export default function AgentLoginPage() {
   }
 
   return (
-    <main className="mx-auto flex w-200 flex-1 flex-col justify-center gap-lg p-md">
-      <header className="flex flex-col gap-3xs">
-        <p className="font-righteous text-h2">VéhiPass</p>
-        <h1 className="text-display">Espace agent</h1>
-        <p className="text-muted">
-          {step === 'credentials'
-            ? 'Connectez-vous avec votre matricule.'
-            : 'Saisissez le code temporaire à 6 chiffres.'}
-        </p>
-      </header>
-
-      {step === 'credentials' ? (
-        <form onSubmit={submitCredentials} className="flex flex-col gap-sm">
-          <TextField
-            label="Matricule"
-            value={badge}
-            onChange={(e) => setBadge(e.target.value)}
-            autoComplete="username"
-            autoCapitalize="characters"
-            required
-          />
-          <TextField
-            label="Mot de passe"
-            type={showPassword ? 'text' : 'password'}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
-            required
-            trailing={
-              <Button
-                variant="ghost"
-                aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
-                onClick={() => setShowPassword((v) => !v)}
-                icon={showPassword ? <IconlyHide size={20} /> : <IconlyShow size={20} />}
-              />
-            }
-          />
-          {error && (
-            <p role="alert" className="text-small text-error">
-              {error}
-            </p>
-          )}
-          <Button type="submit" fullWidth loading={pending}>
-            Continuer
-          </Button>
-        </form>
-      ) : (
-        <form onSubmit={submitCode} className="flex flex-col gap-sm">
-          <TextField
-            label="Code temporaire"
-            value={code}
-            onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            maxLength={6}
-            autoFocus
-            required
-          />
-          {error && (
-            <p role="alert" className="text-small text-error">
-              {error}
-            </p>
-          )}
-          <Button type="submit" fullWidth loading={pending} disabled={code.length !== 6}>
-            Se connecter
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={() => {
-              setStep('credentials')
-              setCode('')
-              setError(null)
-            }}
-          >
-            Retour
-          </Button>
-        </form>
-      )}
-
-      {env.VITE_API_MODE === 'mock' && (
-        <aside className="rounded-surface bg-surface p-sm text-small text-muted">
-          <p className="font-semibold text-foreground">Compte de démo</p>
-          <p>
-            Matricule {DEMO_HINT.badge} · mot de passe {DEMO_HINT.password} · code {DEMO_HINT.otp}
+    <AgentFrame>
+      <div className="grid-wrapper text-background">
+        <div className="grid-background" aria-hidden="true" />
+        <header className="relative z-10 flex flex-col gap-3xs px-md pt-xl pb-xl">
+          <p className="font-righteous text-h2">VéhiPass</p>
+          <h1 className="font-title text-display">Espace agent</h1>
+          <p className="text-background/70">
+            {step === 'credentials'
+              ? 'Connectez-vous avec votre matricule.'
+              : 'Saisissez le code temporaire à 6 chiffres.'}
           </p>
-        </aside>
-      )}
-    </main>
+        </header>
+      </div>
+
+      <main className="relative z-10 -mt-md flex flex-1 flex-col gap-md rounded-t-surface bg-background p-md">
+        {step === 'credentials' ? (
+          <form onSubmit={submitCredentials} className="flex flex-col gap-sm">
+            <TextField
+              label="Matricule"
+              value={badge}
+              onChange={(e) => setBadge(e.target.value)}
+              autoComplete="username"
+              autoCapitalize="characters"
+              required
+            />
+            <TextField
+              label="Mot de passe"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+              required
+              trailing={
+                <Button
+                  variant="ghost"
+                  aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                  onClick={() => setShowPassword((v) => !v)}
+                  icon={showPassword ? <IconlyHide size={20} /> : <IconlyShow size={20} />}
+                />
+              }
+            />
+            {error && (
+              <p role="alert" className="text-small text-error">
+                {error}
+              </p>
+            )}
+            <Button type="submit" fullWidth loading={pending}>
+              Continuer
+            </Button>
+          </form>
+        ) : (
+          <form onSubmit={submitCode} className="flex flex-col gap-sm">
+            <TextField
+              label="Code temporaire"
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              maxLength={6}
+              autoFocus
+              required
+            />
+            {error && (
+              <p role="alert" className="text-small text-error">
+                {error}
+              </p>
+            )}
+            <Button type="submit" fullWidth loading={pending} disabled={code.length !== 6}>
+              Se connecter
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setStep('credentials')
+                setCode('')
+                setError(null)
+              }}
+            >
+              Retour
+            </Button>
+          </form>
+        )}
+
+        {env.VITE_API_MODE === 'mock' && (
+          <aside className="mt-auto rounded-surface bg-surface p-sm text-small text-muted">
+            <p className="font-semibold text-foreground">Compte de démo</p>
+            <p>
+              Matricule {DEMO_HINT.badge} · mot de passe {DEMO_HINT.password} · code {DEMO_HINT.otp}
+            </p>
+          </aside>
+        )}
+      </main>
+    </AgentFrame>
   )
 }
