@@ -5,7 +5,7 @@ const SOON = ['Propriétaire', 'Administration', 'Institution']
 
 export default function HomePage() {
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-lg p-md">
+    <main className="mx-auto flex w-200 flex-1 flex-col justify-center gap-lg p-md">
       <header className="flex flex-col gap-3xs">
         <p className="font-righteous text-display">VéhiPass</p>
         <p className="text-muted">Module de vérification numérique des véhicules — prototype.</p>

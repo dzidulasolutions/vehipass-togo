@@ -70,7 +70,7 @@ export default function AgentLoginPage() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-lg p-md">
+    <main className="mx-auto flex w-200 flex-1 flex-col justify-center gap-lg p-md">
       <header className="flex flex-col gap-3xs">
         <p className="font-righteous text-h2">VéhiPass</p>
         <h1 className="text-display">Espace agent</h1>

@@ -6,7 +6,7 @@ export function DemoQrPanel({ onScan }: { onScan: (token: string) => void }) {
   const items = useMemo(() => listDemoQr(), [])
 
   return (
-    <section className="flex flex-col gap-xs">
+    <section className="w-full flex flex-col gap-xs">
       <div className="flex flex-col gap-3xs">
         <h2 className="text-h2">QR de démo</h2>
         <p className="text-small text-muted">Sans caméra, touchez un cas pour simuler un scan.</p>

@@ -51,7 +51,7 @@ export default function AgentScanPage() {
   const reset = () => setState({ phase: 'idle' })
 
   return (
-    <div className="flex flex-col gap-md">
+    <div className="w-200 flex flex-col gap-md">
       {state.phase === 'idle' && (
         <>
           <header className="flex flex-col gap-3xs">
