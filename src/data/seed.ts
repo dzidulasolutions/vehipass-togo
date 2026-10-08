@@ -1,4 +1,5 @@
 import type {
+  Control,
   Db,
   DocumentStatus,
   Ownership,
@@ -8,6 +9,7 @@ import type {
   Vehicle,
   VehicleDocument,
   VehicleStatus,
+  VerdictCode,
 } from '../types/types'
 
 const DAY_MS = 86_400_000
@@ -174,6 +176,43 @@ export function buildSeed(today: Date): Db {
     ...extra,
   })
 
+    const pad2 = (n: number) => String(n).padStart(2, '0')
+
+  // Un historique réaliste : les verdicts correspondent à l'état des véhicules de démo.
+  const controlPattern: Array<{ vehicle: string | null; verdict: VerdictCode }> = [
+    { vehicle: 'v1', verdict: 'CONFORME' },
+    { vehicle: 'v5', verdict: 'CONFORME' },
+    { vehicle: 'v2', verdict: 'DOCUMENT_A_REGULARISER' },
+    { vehicle: 'v9', verdict: 'CONFORME' },
+    { vehicle: 'v6', verdict: 'CONFORME' },
+    { vehicle: null, verdict: 'VERIFICATION_IMPOSSIBLE' },
+    { vehicle: 'v3', verdict: 'DOCUMENT_A_REGULARISER' },
+    { vehicle: 'v10', verdict: 'CONFORME' },
+    { vehicle: 'v4', verdict: 'VEHICULE_SUSPENDU' },
+    { vehicle: 'v7', verdict: 'CONFORME' },
+    { vehicle: 'v8', verdict: 'REACTIVATION_REQUISE' },
+    { vehicle: 'v1', verdict: 'CONFORME' },
+  ]
+
+  const controls: Control[] = Array.from({ length: 36 }, (_, i): Control => {
+    const entry = controlPattern[i % controlPattern.length]
+    const vehicle = vehicles.find((v) => v.id === entry.vehicle)
+    // Les trois plus récents datent des dernières heures ; les autres, des jours précédents.
+    const timestamp =
+      i < 3
+        ? new Date(today.getTime() - (i + 1) * 41 * 60_000).toISOString()
+        : `${d(-(1 + Math.floor((i - 3) / 3)))}T${pad2(7 + ((i * 5) % 11))}:${pad2((i * 17) % 60)}:00Z`
+    return {
+      id: `c${pad(i + 1)}`,
+      agent_id: i % 4 === 3 ? 'u_agent2' : 'u_agent1',
+      vehicle_id: vehicle?.id ?? null,
+      scanned_public_id: vehicle?.public_id ?? '0123456789',
+      timestamp,
+      verdict: entry.verdict,
+      mode: i % 9 === 0 ? 'offline' : 'online',
+    }
+  })
+
   return {
     meta: { version: 1, generated_at: d(0) },
         config: { activation_months: 6, grace_days: 15, contest_days: 30, registration_fee_xof: 1000, snapshot_hours: 24 },
@@ -232,7 +271,7 @@ export function buildSeed(today: Date): Db {
         recipient: 'Trésor public — démo',
       },
     ],
-    controls: [],
+    controls,
     change_requests: [
       {
         id: 'cr1', vehicle_id: 'v3', requested_by: 'p3', type: 'correction',

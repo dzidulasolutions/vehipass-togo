@@ -129,8 +129,13 @@ describe('vérification d’un QR', () => {
     expect(result.verdict.code).toBe('CONFORME')
     expect(result.vehicle).toMatchObject({ plate: 'TG-DEMO-001', hasDeclaredDriver: false })
     expect(result.controlId).not.toBeNull()
-    expect(getDb().controls).toHaveLength(1)
-    expect(getDb().controls[0]).toMatchObject({ agent_id: 'u_agent1', vehicle_id: 'v1', verdict: 'CONFORME', mode: 'online' })
+    expect(getDb().controls.at(-1)).toMatchObject({
+      id: result.controlId,
+      agent_id: 'u_agent1',
+      vehicle_id: 'v1',
+      verdict: 'CONFORME',
+      mode: 'online',
+    })
     expect(auditActions()).toContain('qr.verify')
   })
 
