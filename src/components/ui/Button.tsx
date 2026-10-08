@@ -2,12 +2,14 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { cx } from '../../lib/cx'
 import { IconlyLoader } from '../icons'
 
-type Variant = 'primary' | 'secondary' | 'ghost'
+type Variant = 'primary' | 'secondary' | 'ghost' | 'inverse' | 'ghost-inverse'
 
 const VARIANTS: Record<Variant, string> = {
   primary: 'bg-primary text-background hover:opacity-90',
   secondary: 'border border-border bg-background text-foreground hover:bg-surface',
   ghost: 'text-foreground hover:bg-surface',
+  inverse: 'bg-background text-primary hover:opacity-90',
+  'ghost-inverse': 'text-background hover:bg-background/10',
 }
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {

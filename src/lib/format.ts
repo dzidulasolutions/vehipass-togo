@@ -1,3 +1,5 @@
+import { daysBetween } from "../rules/dates"
+
 const pad = (n: number) => String(n).padStart(2, '0')
 
 /** « jour » ou « jours » : le pluriel commence à 2. */
@@ -22,4 +24,22 @@ export function formatDaysLeft(daysLeft: number): string {
   if (daysLeft === 0) return "Expire aujourd'hui"
   if (daysLeft > 0) return `Expire dans ${daysLeft} ${plural(daysLeft, 'jour')}`
   return `Expiré depuis ${-daysLeft} ${plural(-daysLeft, 'jour')}`
+}
+
+/** « Aujourd'hui », « Hier », sinon la date. */
+export function formatDayLabel(day: string, today: string): string {
+  const diff = daysBetween(day, today)
+  if (diff === 0) return "Aujourd'hui"
+  if (diff === 1) return 'Hier'
+  return formatDate(day)
+}
+
+/** Initiales (2 maximum) pour un avatar. */
+export function getInitials(name: string): string {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? '')
+    .join('')
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatDate, formatDateTime, formatDaysLeft, plural } from './format'
+import { formatDate, formatDateTime, formatDayLabel, formatDaysLeft, getInitials, plural } from './format'
 
 describe('format', () => {
   it('accorde jour / jours', () => {
@@ -24,5 +24,19 @@ describe('format', () => {
     expect(formatDaysLeft(0)).toBe("Expire aujourd'hui")
     expect(formatDaysLeft(-1)).toBe('Expiré depuis 1 jour')
     expect(formatDaysLeft(-4)).toBe('Expiré depuis 4 jours')
+  })
+})
+
+describe('formatDayLabel et getInitials', () => {
+  it('dit aujourd’hui, hier, ou la date', () => {
+    expect(formatDayLabel('2026-10-05', '2026-10-05')).toBe("Aujourd'hui")
+    expect(formatDayLabel('2026-10-04', '2026-10-05')).toBe('Hier')
+    expect(formatDayLabel('2026-10-01', '2026-10-05')).toBe('01/10/2026')
+  })
+
+  it('calcule les initiales', () => {
+    expect(getInitials('Agent Démo 1')).toBe('AD')
+    expect(getInitials('Kossi')).toBe('K')
+    expect(getInitials('  ')).toBe('')
   })
 })
