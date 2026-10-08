@@ -22,6 +22,7 @@ function call<T>(promise: Promise<T>): Promise<T> {
       throw result.error
     })
 }
+    const before = getDb().controls.length
 
 async function loginAgent(badge = 'AG-001') {
   const challenge = await call(api.login({ kind: 'agent', badge, password: DEMO_PASSWORD }))
@@ -35,7 +36,6 @@ const vehicleOf = (id: string) => {
 }
 const tokenOf = (vehicleId: string) => buildQrToken(vehicleOf(vehicleId).public_id)
 const auditActions = () => getDb().audit_log.map((e) => e.action)
-
 describe('connexion', () => {
   beforeEach(() => {
     vi.useFakeTimers()
@@ -153,7 +153,7 @@ describe('vérification d’un QR', () => {
     expect(result.verdict.code).toBe('VERIFICATION_IMPOSSIBLE')
     expect(result.vehicle).toBeNull()
     expect(result.verdict.documents).toEqual([])
-    expect(getDb().controls[0]?.vehicle_id).toBeNull()
+    expect(getDb().controls.at(-1)?.vehicle_id).toBeNull()
   })
 
   it('QR inconnu (signature valide, aucun dossier) : vérification impossible', async () => {
@@ -167,7 +167,7 @@ describe('vérification d’un QR', () => {
     await loginAgent()
     const result = await call(api.verifyQr('bonjour tout le monde'))
     expect(result.verdict.code).toBe('VERIFICATION_IMPOSSIBLE')
-    expect(getDb().controls[0]?.scanned_public_id).toBe('illisible')
+        expect(getDb().controls.at(-1)?.scanned_public_id).toBe('illisible')
   })
 
   it('v5 : l’ancien QR révoqué affiche « Code révoqué » sans donnée', async () => {
@@ -237,8 +237,7 @@ describe('vérification d’un QR', () => {
     expect(valid.label).toBe('Véhicule enregistré — statut : valide')
     expect(suspended.label).toBe('Véhicule enregistré — statut : à vérifier')
     expect(suspended.label).not.toMatch(/suspend/i)
-    expect(getDb().controls).toHaveLength(0)
-  })
+    expect(getDb().controls).toHaveLength(before)  })
 
   it('toutes ces opérations laissent un journal d’audit dont la chaîne est valide', async () => {
     await loginAgent()
