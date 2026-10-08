@@ -7,7 +7,7 @@ import { env } from '../../config/env'
 import { useSession } from '../../hooks/useSession'
 import { api } from '../../services/api'
 import { clearSession } from '../../services/session'
-import { DemoTools } from '../demo/DemoTools'
+import { DemoTools } from './DemoTools'
 
 export default function AgentProfilePage() {
   const session = useSession()

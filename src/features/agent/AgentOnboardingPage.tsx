@@ -38,10 +38,10 @@ export default function AgentOnboardingPage() {
 
   return (
     <AgentFrame>
-      <div className="grid-wrapper flex flex-1 flex-col text-background">
-        <div className="grid-background" aria-hidden="true" />
-        <div className="relative z-10 flex flex-1 flex-col p-md">
-          <div className="flex items-center justify-between">
+      <div className="w-full grid-wrapper flex flex-1 flex-col text-background">
+        <div className="w-full grid-background" aria-hidden="true" />
+        <div className="w-full relative z-10 flex flex-1 flex-col p-md">
+          <div className="w-full flex items-center justify-between">
             <span className="font-righteous text-h2">VéhiPass</span>
             {!isLast && (
               <Button variant="ghost-inverse" onClick={finish}>
